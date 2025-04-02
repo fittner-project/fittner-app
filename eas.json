@@ -22,8 +22,7 @@
     "production": {
       "ios": {
         "appleId": "fittnermanager@gmail.com",
-        "ascAppId": "6740015102",
-        "appleTeamId": "6Q633R77S5"
+        "ascAppId": "6740015102"
       }
     }
   }
