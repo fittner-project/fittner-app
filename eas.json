@@ -17,8 +17,7 @@
     "production": {
       "autoIncrement": true,
       "ios": {
-        "resourceClass": "m1-medium",
-        "syncCapabilities": false
+        "resourceClass": "m1-medium"
       }
     }
   },
