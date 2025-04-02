@@ -1,17 +1,18 @@
 {
   "expo": {
-    "name": "fittner-app",
+    "name": "피트너",
     "slug": "fittner-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "fittner-app",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "kr.co.fittner",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "name": "피트너"
     },
     "android": {
       "adaptiveIcon": {
