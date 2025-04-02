@@ -11,12 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "kr.co.fittner",
-      "buildNumber": "1.0.0",
-      "infoPlist": {
-        "UIBackgroundModes": ["remote-notification"],
-        "FirebaseAppDelegateProxyEnabled": false
-      },
-      "usesAppleSignIn": false
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
