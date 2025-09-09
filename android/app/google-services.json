@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "457729056549",
+    "project_id": "fittner-afe00",
+    "storage_bucket": "fittner-afe00.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457729056549:android:ec35c3d74a6d87a3c0c4cc",
+        "android_client_info": {
+          "package_name": "kr.co.fittner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "457729056549-le60lgtagua64odgdk9tavldbck97krf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5AHvJ3K1SpCnqu2-Ji-dgIlfuAq3e0aw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "457729056549-le60lgtagua64odgdk9tavldbck97krf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "457729056549-s3qbkvhnen643h8ksfklodreej6f55g9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kr.co.fittner"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

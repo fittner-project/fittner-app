@@ -12,13 +12,17 @@
       "supportsTablet": true,
       "bundleIdentifier": "kr.co.fittner",
       "buildNumber": "1.0.1",
-      "name": "피트너"
+      "name": "피트너",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": ["POST_NOTIFICATIONS"],
+      "googleServicesFile": "./google-services.json",
+      "package": "kr.co.fittner"
     },
     "web": {
       "bundler": "metro",
@@ -35,7 +39,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "@react-native-firebase/app"
     ],
     "experiments": {
       "typedRoutes": true

@@ -33,6 +33,7 @@ export default function Index() {
           backgroundColor="transparent"
           translucent={true}
         />
+
         <WebView
           style={{ flex: 1, backgroundColor: "white" }}
           textZoom={100}
