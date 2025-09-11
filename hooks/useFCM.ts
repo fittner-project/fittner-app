@@ -27,9 +27,11 @@ export const useFCM = () => {
     try {
       setToken((prev) => ({ ...prev, isLoading: true, error: null }));
 
+      // FCM 서비스 초기화 (권한 체크 및 토큰 가져오기 포함)
       await FCMService.initialize();
 
-      const fcmToken = await FCMService.getFCMToken();
+      // 초기화 후 현재 상태 확인
+      const fcmToken = FCMService.currentToken; // getter 사용
       const permission = await FCMService.requestUserPermission();
 
       setToken({

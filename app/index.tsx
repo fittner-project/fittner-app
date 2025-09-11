@@ -1,11 +1,11 @@
 import useHardwareBack from "@/hooks/useHardwareBack";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { WebView } from "react-native-webview";
 
 import OfflineNotice from "@/components/OfflineNotice";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
+import { useFCM } from "@/hooks/useFCM";
 import { Platform, SafeAreaView, StatusBar, View } from "react-native";
-import FCMService from "../fcm";
 
 const INJECTEDJAVASCRIPT = `
   // viewport 설정
@@ -39,19 +39,29 @@ export default function Index() {
   const isConnected = useNetworkStatus();
   const [isError, setIsError] = useState(false);
 
+  // FCM 훅 사용 (자동으로 초기화됨)
+  const { token: fcmToken } = useFCM();
+
   const sendTokenToWeb = useCallback(async () => {
     try {
-      const token = await FCMService.getFCMToken();
-      if (!token) return;
+      if (!fcmToken) return;
       // WebView 측으로 토큰 주입
       const js = `window.onNativeFcmToken && window.onNativeFcmToken(${JSON.stringify(
-        token
+        fcmToken
       )}); true;`;
       webViewRef.current?.injectJavaScript(js);
+      console.log("FCM 토큰을 웹으로 전송:", fcmToken);
     } catch (e) {
-      // noop
+      console.error("토큰 전송 실패:", e);
     }
-  }, []);
+  }, [fcmToken]);
+
+  // FCM 토큰이 준비되면 즉시 웹으로 전송
+  useEffect(() => {
+    if (fcmToken && webViewRef.current) {
+      sendTokenToWeb();
+    }
+  }, [fcmToken, sendTokenToWeb]);
 
   const getUserAgent = () => {
     if (Platform.OS === "ios") {

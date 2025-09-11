@@ -44,11 +44,10 @@ target 'app' do
     :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
   )
 
-  # FirebaseCoreInternal가 Swift로 빌드되며 GoogleUtilities의 모듈 맵이 필요합니다.
+  # Enable modular headers only for specific pods that need it
   pod 'GoogleUtilities', :modular_headers => true
-  pod 'FirebaseCore', :modular_headers => true
   pod 'FirebaseCoreInternal', :modular_headers => true
-  pod 'FirebaseInstallations', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
 
   post_install do |installer|
     react_native_post_install(

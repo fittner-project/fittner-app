@@ -18,7 +18,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "monochromeImage": "./assets/images/adaptive-icon-monochrome.png"
       },
       "permissions": ["POST_NOTIFICATIONS"],
       "googleServicesFile": "./google-services.json",
@@ -35,8 +36,8 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
+          "imageWidth": 0,
+          "resizeMode": "cover",
           "backgroundColor": "#ffffff"
         }
       ],

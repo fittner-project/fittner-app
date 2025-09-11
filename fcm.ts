@@ -19,6 +19,11 @@ export class FCMService {
 
   private constructor() {}
 
+  // fcmToken getter 추가
+  get currentToken(): string | null {
+    return this.fcmToken;
+  }
+
   public static getInstance(): FCMService {
     if (!FCMService.instance) {
       FCMService.instance = new FCMService();
@@ -62,23 +67,34 @@ export class FCMService {
     }
   }
 
-  // FCM 토큰 가져오기
+  // FCM 토큰 가져오기 (기존 토큰 반환 또는 새로 가져오기)
   async getFCMToken(): Promise<string | null> {
-    try {
-      if (this.fcmToken) {
-        return this.fcmToken;
-      }
+    if (this.fcmToken) {
+      return this.fcmToken;
+    }
+    return await this.getFCMTokenSimple();
+  }
 
+  private async ensureDeviceRegistered(): Promise<void> {
+    try {
+      await messaging().setAutoInitEnabled(true);
+      if (!messaging().isDeviceRegisteredForRemoteMessages) {
+        await messaging().registerDeviceForRemoteMessages();
+      }
+    } catch (e) {
+      console.warn("원격 메시지 등록 확인 실패(무시 가능):", e);
+    }
+  }
+
+  private async getFCMTokenSimple(): Promise<string | null> {
+    try {
       const token = await messaging().getToken();
       this.fcmToken = token;
       console.log("FCM Token:", token);
-
-      // 토큰을 서버에 전송하는 로직을 여기에 추가
       await this.sendTokenToServer(token);
-
       return token;
-    } catch (error) {
-      console.error("FCM 토큰 가져오기 실패:", error);
+    } catch (err: any) {
+      console.error("FCM 토큰 가져오기 실패:", err);
       return null;
     }
   }
@@ -184,6 +200,10 @@ export class FCMService {
       // Firebase 네이티브 초기화 확인 로그
       console.log("Firebase 앱 초기화 확인됨");
 
+      // 앱 시작 시 뱃지 초기화 (iOS 시뮬레이터 문제 해결)
+      await Notifications.setBadgeCountAsync(0);
+      console.log("앱 뱃지 초기화 완료");
+
       // Android 알림 채널 설정 (없으면 알림 표시 안 될 수 있음)
       if (Platform.OS === "android") {
         await Notifications.setNotificationChannelAsync("default", {
@@ -202,11 +222,14 @@ export class FCMService {
         return;
       }
 
+      // 원격 메시지 자동 초기화 및 기기 등록 보장
+      await this.ensureDeviceRegistered();
+
       // 백그라운드 메시지 핸들러 설정
       this.setupBackgroundMessageHandler();
 
       // FCM 토큰 가져오기
-      await this.getFCMToken();
+      await this.getFCMTokenSimple();
 
       // 초기 알림 확인
       await this.checkInitialNotification();
