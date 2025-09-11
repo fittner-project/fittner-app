@@ -7,7 +7,7 @@ Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
-    shouldSetBadge: false,
+    shouldSetBadge: true,
     shouldShowBanner: true,
     shouldShowList: true,
   }),
@@ -36,6 +36,14 @@ export class FCMService {
 
       if (enabled) {
         console.log("Authorization status:", authStatus);
+        // iOS 배지/알림 권한도 함께 요청 (expo-notifications)
+        try {
+          await Notifications.requestPermissionsAsync({
+            ios: { allowAlert: true, allowSound: true, allowBadge: true },
+          });
+        } catch (e) {
+          console.warn("iOS 알림 권한(배지 포함) 추가 요청 경고:", e);
+        }
       }
 
       return enabled;
@@ -183,6 +191,7 @@ export class FCMService {
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: "#FF231F7C",
+          showBadge: true,
         });
       }
 
@@ -198,13 +207,6 @@ export class FCMService {
 
       // FCM 토큰 가져오기
       await this.getFCMToken();
-
-      // 리스너들 설정
-      const unsubscribeTokenRefresh = this.setupTokenRefreshListener();
-      const unsubscribeForegroundMessage =
-        this.setupForegroundMessageListener();
-      const unsubscribeNotificationOpenedApp =
-        this.setupNotificationOpenedAppListener();
 
       // 초기 알림 확인
       await this.checkInitialNotification();
