@@ -37,7 +37,6 @@ export default function Index() {
   const webViewRef = useRef<WebView>(null);
   const handleNavigationStateChange = useHardwareBack(webViewRef);
   const isConnected = useNetworkStatus();
-  const [isError, setIsError] = useState(false);
 
   // FCM 훅 사용 (자동으로 초기화됨)
   const { token: fcmToken } = useFCM();
@@ -70,7 +69,7 @@ export default function Index() {
     return "Mozilla/5.0 (Linux; Android 12; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36";
   };
 
-  if (!isConnected || isError) {
+  if (!isConnected) {
     return <OfflineNotice />;
   }
 
@@ -90,7 +89,6 @@ export default function Index() {
           onNavigationStateChange={handleNavigationStateChange}
           ref={webViewRef}
           source={{ uri: "https://m.fittner.co.kr/" }}
-          onError={() => setIsError(true)}
           userAgent={getUserAgent()}
           onLoadEnd={() => {
             // 로드 완료 시 토큰 전송 시도
