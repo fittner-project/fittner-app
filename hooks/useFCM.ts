@@ -22,17 +22,22 @@ export const useFCM = () => {
 
   const [hasPermission, setHasPermission] = useState<boolean>(false);
 
-  // FCM 초기화
+  // FCM 초기화 (권한 -> 토큰 -> 웹 전송은 index.tsx에서 수행)
   const initializeFCM = useCallback(async () => {
     try {
       setToken((prev) => ({ ...prev, isLoading: true, error: null }));
+      // 권한 상태 확인 및 토큰 시도
+      const permission = await FCMService.requestUserPermission();
+      if (!permission) {
+        setHasPermission(false);
+        setToken({ token: null, isLoading: false, error: null });
+        return;
+      }
 
-      // FCM 서비스 초기화 (권한 체크 및 토큰 가져오기 포함)
+      // FCM 서비스 초기화
       await FCMService.initialize();
 
-      // 초기화 후 현재 상태 확인
-      const fcmToken = FCMService.currentToken; // getter 사용
-      const permission = await FCMService.requestUserPermission();
+      const fcmToken = await FCMService.getFCMToken();
 
       setToken({
         token: fcmToken,
@@ -57,7 +62,12 @@ export const useFCM = () => {
   const refreshToken = useCallback(async () => {
     try {
       setToken((prev) => ({ ...prev, isLoading: true, error: null }));
-
+      const permission = await FCMService.requestUserPermission();
+      if (!permission) {
+        setHasPermission(false);
+        setToken({ token: null, isLoading: false, error: null });
+        return;
+      }
       const fcmToken = await FCMService.getFCMToken();
 
       setToken({

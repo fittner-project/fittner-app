@@ -19,11 +19,6 @@ export class FCMService {
 
   private constructor() {}
 
-  // fcmToken getter 추가
-  get currentToken(): string | null {
-    return this.fcmToken;
-  }
-
   public static getInstance(): FCMService {
     if (!FCMService.instance) {
       FCMService.instance = new FCMService();
@@ -67,36 +62,45 @@ export class FCMService {
     }
   }
 
-  // FCM 토큰 가져오기 (기존 토큰 반환 또는 새로 가져오기)
+  // FCM 토큰 가져오기
   async getFCMToken(): Promise<string | null> {
-    if (this.fcmToken) {
-      return this.fcmToken;
+    try {
+      if (this.fcmToken) {
+        return this.fcmToken;
+      }
+
+      const token = await messaging().getToken();
+      this.fcmToken = token;
+      console.log("FCM Token:", token);
+
+      // 토큰을 서버에 전송하는 로직을 여기에 추가
+      await this.sendTokenToServer(token);
+
+      return token;
+    } catch (error) {
+      console.error("FCM 토큰 가져오기 실패:", error);
+      return null;
     }
-    return await this.getFCMTokenSimple();
   }
 
   private async ensureDeviceRegistered(): Promise<void> {
     try {
       await messaging().setAutoInitEnabled(true);
-      if (!messaging().isDeviceRegisteredForRemoteMessages) {
+      // iOS에서만 명시적으로 원격 메시지 등록 필요
+      if (
+        Platform.OS === "ios" &&
+        !messaging().isDeviceRegisteredForRemoteMessages
+      ) {
         await messaging().registerDeviceForRemoteMessages();
       }
     } catch (e) {
+      // iOS/Android 모두에서 등록 과정은 최초 1회만 필요
       console.warn("원격 메시지 등록 확인 실패(무시 가능):", e);
     }
   }
 
   private async getFCMTokenSimple(): Promise<string | null> {
-    try {
-      const token = await messaging().getToken();
-      this.fcmToken = token;
-      console.log("FCM Token:", token);
-      await this.sendTokenToServer(token);
-      return token;
-    } catch (err: any) {
-      console.error("FCM 토큰 가져오기 실패:", err);
-      return null;
-    }
+    return await this.getFCMToken();
   }
 
   // 서버에 토큰 전송 (구현 필요)
@@ -199,10 +203,6 @@ export class FCMService {
     try {
       // Firebase 네이티브 초기화 확인 로그
       console.log("Firebase 앱 초기화 확인됨");
-
-      // 앱 시작 시 뱃지 초기화 (iOS 시뮬레이터 문제 해결)
-      await Notifications.setBadgeCountAsync(0);
-      console.log("앱 뱃지 초기화 완료");
 
       // Android 알림 채널 설정 (없으면 알림 표시 안 될 수 있음)
       if (Platform.OS === "android") {
